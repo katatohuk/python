@@ -9,4 +9,4 @@ print """
 		With the three doulbe quotes.
 		We'll be albe to type as much as we like.
 		Even 4 lines if we want, or 5, or 6.
-		§"""
+		"""
