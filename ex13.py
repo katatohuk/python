@@ -1,7 +1,7 @@
-from sys import argvs
-script, first, second, third = argvs
+from sys import argv
+script, first, second, third = argv
 
-print "This script is called", script
+print "Calling script with name: ", script
 print "My first variable is: ", first
 print "My second variable is: ", second
 print "My third variable is: ", third
