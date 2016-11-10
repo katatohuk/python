@@ -14,8 +14,15 @@ choise = int(raw_input("Please choose [1-3] options: "))
 
 if choise == 1:
 	print datetime.now()
+#Two ways to show current year
+#1st
 elif choise == 2:
 	print date.today().year
+#2nd
+#
+#elif choise ==2:
+#	print datetime.now().year
+#
 elif choise == 3:
 	print "Starting backup"
 elif choise == 4:
