@@ -1,12 +1,13 @@
 #lets try some choise menu
-from datetime import datetime
+from datetime import datetime, date
 
 print 30 * '-'
 print " MAIN MENU"
 print 30 * '-'
 print "1. Show me current date"
-print "2. Start backup"
-print "3. Exit programm"
+print "2. Show me current year"
+print "3. Start backup"
+print "4. Exit programm"
 
 choise = int(raw_input("Please choose [1-3] options: "))
 #choise = int(choise)
@@ -14,8 +15,10 @@ choise = int(raw_input("Please choose [1-3] options: "))
 if choise == 1:
 	print datetime.now()
 elif choise == 2:
+	print date.today().year
+elif choise == 3:
 	print "Starting backup"
-elif choise ==3:
+elif choise == 4:
 	print "Exiting programm"
 else:
 	print "Incorrect value entered, try again"		
