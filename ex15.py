@@ -5,7 +5,8 @@ txt = open(filename)
 
 print "Here is ur file %r: " % filename
 print txt.read()
-
+#Lets close file to free it up
+txt.close()
 #We can ask to in 2 different ways.
 #1
 print "Print the file name again:"
@@ -15,3 +16,4 @@ file_again = raw_input("> ")
 
 txt_again = open(file_again)
 print txt_again.read()
+txt_again.close()
