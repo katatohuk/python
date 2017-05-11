@@ -1,8 +1,16 @@
-print "How old are you?",
-age = raw_input("Please specify your age: ")
-print "How tall are you?",
-height = raw_input()
-print "How much do you weight?",
-weight = raw_input()
+#Long code
+print("How old are you ?", end=' ')
+age = input()
+print("How tall are you?", end=' ')
+height = input()
+print("How much do you weight ?", end=' ')
+weight = input()
 
-print "So you're %s years old, %s tall and %s weight" % (age, height, weight)
+print(f"So you're {age} old, {height} tall and {weight} heavy.")
+
+#Shorter code
+age = input("How old are you ? ")
+height = input("How tall are you ? ")
+weight = input("How much do you weight ? ")
+
+print(f"So you're {age} old, {height} tall and {weight} heavy.")
