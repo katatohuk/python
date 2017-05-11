@@ -1,12 +1,11 @@
-days = "Mon Tue Wed Thi Fri Sat Sun"
-months = "Jan\nFeb\nMar\nApr\nMay\nJun\nJul\nAug\nSep\nOct\nNov\nDec"
-#print months
-#print days
-print "Here are days: ", days
-print "Here are months: ", months
-print """
-		There is something going on here.
-		With the three doulbe quotes.
-		We'll be albe to type as much as we like.
-		Even 4 lines if we want, or 5, or 6.
-		"""
+days = "Mon Tue Wed Thu Fri Sat Sun"
+months = "\nJan\nFeb\nMar\nApr\nMay\nJun\nJul\nAug\nSep\nOct\nNov\nDec"
+
+print("Here are days of the week: ", days)
+print("Here are months: ", months)
+
+print("""
+Here is smth going on here.
+With 3 doulbe quoutes you can
+Write down as many lines as you wish.
+""")
