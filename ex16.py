@@ -9,16 +9,17 @@ print("If u wanna proceed, press Enter")
 input("?")
 
 print("Opening the file...")
-target = open(filename, 'w')
+#Using r+ to open file for reading/writing the same time
+target = open(filename, 'r+')
 
 print("Truncating file")
 target.truncate()
-target.close()
+#target.close()
 
-target = open(filename, 'r')
+#target = open(filename, 'r')
 print("File is empty now. Lets check that, if u dont see any line below - file has been succesfully truncated.")
 print(target.read())
-target.close()
+#target.close()
 
 print("Now I'm going to ask you 3 lines.")
 
