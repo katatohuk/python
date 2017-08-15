@@ -14,12 +14,9 @@ target = open(filename, 'r+')
 
 print("Truncating file")
 target.truncate()
-#target.close()
 
-#target = open(filename, 'r')
 print("File is empty now. Lets check that, if u dont see any line below - file has been succesfully truncated.")
 print(target.read())
-#target.close()
 
 print("Now I'm going to ask you 3 lines.")
 
@@ -29,7 +26,6 @@ line3 = input("line3: ")
 
 print("Great. Now I'm going to write them into file")
 
-#target = open(filename, 'w')
 target.write(line1 + "\n")
 target.write(line2 + "\n")
 target.write(line3 + "\n")
