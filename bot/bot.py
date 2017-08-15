@@ -13,6 +13,6 @@ r = r.text
 parsed_r = json.loads(r)
 #print parsed_r
 result = parsed_r['result']
-print result
+#print result
 
-#print('Here is result:'.format(text))
+print("Here is result: f{result}")

@@ -1,15 +1,26 @@
-#using urllib.request lib
-import urllib.request
-import json
+# -*- coding: utf-8 -*-
+import config
+import telebot
+import os
 
-get_updates = 'https://api.telegram.org/bot{}/getUpdates?offset={}'
-get_updates1 = 'https://api.telegram.org/bot{}/getUpdates'
-send_message = 'https://api.telegram.org/bot{}}/sendMessage?chat_id={}}&text={}'
-bot_token = '364739074:AAEgCaz6bEk9RbA3VnHJkMutgtonCtVzy3M'
+bot = telebot.TeleBot(config.token)
+osname = os.uname()
+#print(osname)
 
-#def telegrem_get_updates():
-update_id = 0
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+	bot.reply_to(message, "Howdy, how are you doing?")
 
-r = urllib.request.urlopen(get_updates1), bot_token#(bot_token, update_id))
-#response = json.loads(r)
-#print (response)
+@bot.message_handler(commands=['osname'])
+def send_message(message): # Название функции не играет никакой роли, в принципе
+    bot.send_message(message.chat.id, message.text, message.osname)
+ 
+
+#@bot.message_handler(content_types=["text"])
+#def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
+#    bot.send_message(message.chat.id, message.text)
+
+
+
+if __name__ == '__main__':
+    bot.polling(none_stop=True)
