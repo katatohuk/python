@@ -2,36 +2,37 @@ from sys import argv
 
 script, filename = argv
 
-print "We're going to erase %r." % filename
-print "If u don't wanna do that press CTRL-C"
-print "If u DO wanna do that, press ENTER"
+print(f"We're going to erase {filename}.")
+print("If u wanna break, press CTRL-C")
+print("If u wanna proceed, press Enter")
 
-raw_input('?')
+input("?")
 
-print "Opening the file..."
+print("Opening the file...")
 target = open(filename, 'w')
 
-print "Truncating the file, goodbye"
+print("Truncating file")
 target.truncate()
-
-print "Now I'm going to ask you to provide 3 lines."
-
-line1 = raw_input("Line 1: ")
-line2 = raw_input("Line 2: ")
-line3 = raw_input("Line 3: ")
-
-print "Now I'm goint write above to the file."
-
-#Lets write in 2 ways, using 6 lines or just 1
-#1
-#target.write(line1)
-#target.write("\n")
-#target.write(line2)
-#target.write("\n")
-#target.write(line3)
-#target.write("\n")
-#2
-target.write(line1 + '\n' + line2 + '\n' + line3)
-print "And finally lets close that file."
-
 target.close()
+
+target = open(filename, 'r')
+print("File is empty now. Lets check that, if u dont see any line below - file has been succesfully truncated.")
+print(target.read())
+target.close()
+
+print("Now I'm going to ask you 3 lines.")
+
+line1 = input("line1: ")
+line2 = input("line2: ")
+line3 = input("line3: ")
+
+print("Great. Now I'm going to write them into file")
+
+target = open(filename, 'w')
+target.write(line1 + "\n")
+target.write(line2 + "\n")
+target.write(line3 + "\n")
+
+print("Saving file now.")
+target.close()
+
