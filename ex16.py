@@ -23,12 +23,11 @@ print("Now I'm going to ask you 3 lines.")
 line1 = input("line1: ")
 line2 = input("line2: ")
 line3 = input("line3: ")
+lines = line1 + "\n" + line2 + "\n" +line3 + "\n"
 
 print("Great. Now I'm going to write them into file")
 
-target.write(line1 + "\n")
-target.write(line2 + "\n")
-target.write(line3 + "\n")
+target.write(lines)
 
 print("Saving file now.")
 target.close()
