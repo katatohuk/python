@@ -1,19 +1,14 @@
 from sys import argv
 
 script, filename = argv
+
 txt = open(filename)
 
-print "Here is ur file %r: " % filename
-print txt.read()
-#Lets close file to free it up
-txt.close()
-#We can ask to in 2 different ways.
-#1
-print "Print the file name again:"
-file_again = raw_input("> ")
-#2
-#file_again = raw_input("Print the file name again: ")
+print(f"Here is ur {filename}:")
+print(txt.read())
 
-txt_again = open(file_again)
-print txt_again.read()
-txt_again.close()
+print("Type filename again here:")
+fileagain = input("> ")
+
+txtagain = open(fileagain)
+print(txtagain.read())
