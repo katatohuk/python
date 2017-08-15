@@ -11,4 +11,4 @@ if a == "Y" or a == "y":
 else:
 	print("So u'r not satisfied :( ")	
 b = input("Please evaluate programm quiality with numbers from 1 to 5: ")
-print(b)
+print("Thanks for evaluation, your value is:", b)
