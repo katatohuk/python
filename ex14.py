@@ -16,6 +16,6 @@ comp = input(promt)
 
 print(f"""
 Alright, so you said you "{likes}" about liking me.
-You line in {lives}. Not sure where that is.
+You live in {lives}. Not sure where that is.
 And you have a {comp} computer. Cool ! 
 """)
