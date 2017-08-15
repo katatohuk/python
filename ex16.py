@@ -29,7 +29,7 @@ line3 = input("line3: ")
 
 print("Great. Now I'm going to write them into file")
 
-target = open(filename, 'w')
+#target = open(filename, 'w')
 target.write(line1 + "\n")
 target.write(line2 + "\n")
 target.write(line3 + "\n")
