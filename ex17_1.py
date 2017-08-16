@@ -1,20 +1,24 @@
-from sys import argv, exit
+from sys import argv
 from os.path import exists
 
 script, from_file, to_file = argv
 
-print "Copying from %s to %s file." % (from_file, to_file)
+print(f"Copying data from {from_file} to {to_file}")
 
-indata = open(from_file).read()
+#open file and read it in one line, instead of separate commands to open and then read
+with open(from_file).read() as in_file:
+	 print(in_file)
 
-# Lets check if file has some data inside by checking file size in bytes, if its 0, file has no text.
-# Please add some into it.
-if len(indata) == 0:
-    exit("File is empty, please add some text. Bye.")
+	
+#print(f"Here is content of {from_file} file: " + "\n", in_file)
+
+print(f"Lets check if sorce file isnt empty")
+if len(in_file) == 0:
+	exit("Source file is 0 bytes, so its empty. Please add some data")
 else:
-    print "Ready, hit ENTER to continue, CTRL-C to abort"
-raw_input()
+	print("Source file is okay")
 
-out_file = open(to_file, 'w').write(indata)
+#out_file = open(to_file, 'w').write(in_file)
+out_file_read = open(to_file).read()
 
-print "All right, all done."
+print(f"Here is content of {to_file}: " + "\n", out_file_read)
