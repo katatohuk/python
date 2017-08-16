@@ -12,8 +12,9 @@ print("Opening the file...")
 #Using r+ to open file for reading/writing the same time
 target = open(filename, 'r+')
 
-print("Truncating file")
-target.truncate()
+#No need to run truncate file, below target.wite(lines) will rewrite file
+#print("Truncating file")
+#target.truncate()
 
 print("File is empty now. Lets check that, if u dont see any line below - file has been succesfully truncated.")
 print(target.read())
