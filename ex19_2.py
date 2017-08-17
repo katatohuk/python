@@ -1,7 +1,7 @@
 def cheese_and_crackers(cheese_count,box_of_crackers,sum):
 	print(f"You have {cheese_count} cheeses!")
 	print(f"You have {box_of_crackers} boxes of crackers!")
-	print(f"Totally you have {sum} cheese and crackers!\n")
+	print(f"Totally you have {sum} cheese and crackers!")
 
 print("Buddy, lets count your cheese and crackers!")
 amount_of_cheese = input("Cheese quantity: ")
