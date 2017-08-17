@@ -1,5 +1,5 @@
 #Lets write function to open file and then write some stuff in it.
-#This is the same was done in ex17_1.py but using a function
+#This is the same was done in ex17.py but using a function
 
 def read_write(output_file, input_file):
 	indata = open(output_file).read()
