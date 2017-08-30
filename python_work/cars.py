@@ -24,3 +24,17 @@ print(cars)
 #del will delete particular item from the list, using position index
 del cars[0]
 print(cars)
+
+#remove moethod will delete particular item from the list, by value
+print("Removing 'honda' from the list using remove method")
+print(100 * "-")
+print(cars)
+cars.remove('honda')
+print(cars)
+
+#pop method will delete last item from the list but u'll be able to use it later
+cars = ['audi', 'vw', 'seat', 'bwm']
+print(cars)
+popped_car = cars.pop()
+print(cars)
+print(popped_car)

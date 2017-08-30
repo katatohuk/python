@@ -1,9 +1,0 @@
--Forgot to put '' for strings 'one', 'two'... in ex8
-cant run ex10_1.py with code
-
-while True:
-    for i in ["/","-","|","\\","|"]:
-        print "%s\r" % i,
-
-
-        
