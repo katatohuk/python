@@ -38,3 +38,9 @@ print(cars)
 popped_car = cars.pop()
 print(cars)
 print(popped_car)
+
+cars = ['audi', 'vw', 'seat', 'bwm']
+expensive_car = "audi"
+cars.remove(expensive_car)
+print(expensive_car.title() + " is too expensive for me, removing from the list")
+
