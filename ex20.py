@@ -21,7 +21,7 @@ rewind(current_file)
 
 print("Now lets print only first 3 lines")
 current_line = 1
-print_a_line(current_line, current_file)
+print_a_line(current_line, current_file)	
 current_line = current_line + 1
 print_a_line(current_line, current_file)
 current_line = current_line + 1
