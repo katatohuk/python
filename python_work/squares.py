@@ -14,3 +14,10 @@ squares = []
 for value in range(1,101):
 	squares.append(value**2)
 print(squares)
+
+#Минимальное число в списке
+print(min(squares))
+#Максимальное число в списке
+print(max(squares))
+#Сумма числе в списке
+print(sum(squares))
