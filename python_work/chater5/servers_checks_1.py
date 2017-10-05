@@ -17,36 +17,60 @@ input_list = list(in_f)
 #if input_server in envs:
 #	print("Server is in the list")
 
-idp = {
-'uat1': 'server1',
-'uat1': 'server2',
-'uat1': 'server3',
-'uat2': 'server4',
-'uat2': 'server5',
-'uat2': 'server6',
-'uat3': 'server7',
-'uat3': 'server8',
-'uat3': 'server9',
+envs = {
+'server1': 'IDP : uat1',
+'server2': 'IDP : uat1',
+'server3': 'IDP : uat1',
+'server4': 'IDP : uuat',
+'server5': 'IDP : uuat',
+'server6': 'IDP : uuat',
+'server7': 'IDP : uat3',
+'server8': 'IDP : uat3',
+'server9': 'IDP : uat3',
+'server10': 'MDF : devx',
+'server11': 'MDF : devx',
+'server12': 'MDF : devx',
+'server13': 'MDF : qax',
+'server14': 'MDF : qax',
+'server15': 'MDF : qax',
+'server16': 'MDF : uatx',
+'server17': 'MDF : uatx',
+'server18': 'MDF : uatx',
 }
 
-mdf = {
-'devx': 'server10',
-'devx': 'server11',
-'devx': 'server12',
-'qax': 'server13',
-'qax': 'server14',
-'qax': 'server15',
-'uatx': 'server16',
-'uatx': 'server17',
-'uatx': 'server18',	
-}
+#idp = sorted(idp.items(), key=lambda item: item[0])
+#print(idp)
 
 
-for key, value in idp.items():
-	if value in input_list:
-    		print("IDP : " + key)
+#envs = [idp, mdf]
+#print(envs)
 
-for key, value in mdf.items():
-	if value in input_list:
-    		print("MDF : " + key)
+for key, value in envs.items():
+	#print("\n" + key)
+	#print(value)
+	if key in input_list:
+    		print(value + " : " + key)
+
+#for key, value in mdf.items():
+#	#print("\n" + key)
+#	#print(value)
+#	if key in input_list:
+#    		print("MDF : " + key + " : " + value)
+
+
+#for key, value in mdf.items():
+#	print("\n" + key)
+#	print(value)
+#	if value in input_list:
+#    		print(value)
+#    		print("MDF : " + key)
+
+
+#for value in input_list:
+#	if value in idp:
+#    		print("IDP : " + key)
+
+#for key, value in mdf.items():
+#	if value in input_list:
+#    		print("MDF : " + key)
 
