@@ -16,8 +16,11 @@ alien_0['color'] = 'green'
 alien_0['points'] = 5
 print(alien_0)
 
-#Lets modify existing value
-alien_0 = {'color': 'yellow'}
+#Lets create dic and then modify existing value
+alien_0 = {'color': 'green'}
+print("Alien color is set to " + alien_0['color'])
+alien_0['color'] = 'yellow'
 #And check that was modified from green to yellow
-print(alien_0['color'])
+print("Alien color has been changed from green to " + alien_0['color'])
+
 
