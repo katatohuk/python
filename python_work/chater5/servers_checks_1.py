@@ -1,4 +1,6 @@
-from sys import argv
+# Chek servers by the list
+# Env server list is hardcoded in this scrip, used dictionary "envs" here
+#  
 
 #script, input_server = argv
 #print(input_server + "\n")
@@ -9,9 +11,25 @@ f = open("envs.txt").read().splitlines()
 #print(f)
 #envs = list(f)
 #print(envs)
-in_f = open("input.txt").read().splitlines()
-input_list = list(in_f)
+in_file = open("input.txt").read().splitlines()
+input_list = list(in_file)
 #print(input_list)
+env_file = open("envs.txt").read()
+#print(env_file)
+
+#env = {}
+#print(env_file.split())
+
+
+#for line in env_file:
+    	#print(a,b)
+	#env['a'] = b
+
+#print(env)
+#envs = dict(key, value.strip())
+
+#print(envs)
+
 
 
 #if input_server in envs:
@@ -38,6 +56,8 @@ envs = {
 'server18': 'MDF : uatx',
 }
 
+#print("\n")
+#print(envs)
 #idp = sorted(idp.items(), key=lambda item: item[0])
 #print(idp)
 
