@@ -1,3 +1,4 @@
+from operator import itemgetter, attrgetter
 
 f = open("envs.txt").read().splitlines()
 in_file = open("input.txt").read().splitlines()
@@ -20,12 +21,14 @@ for line in env_file:
 
 #print("\n")
 #print(envs)
+
+print("\n")
+#print(sorted(envs.keys())
 #print(envs['server1'])
 
-for key, value in envs.items():
+for key, value in sorted(envs.items()):
 	#print("\n" + key)
 	#print(value)
 	if key in input_list:
     		print(value + " : " + key)
-
 
