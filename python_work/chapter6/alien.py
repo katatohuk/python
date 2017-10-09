@@ -1,6 +1,10 @@
+def newline():
+	print("\n")
+
 #Set dictionary and ready keys from it
 alien_0 = {'color': 'green', 'points': 5}
 #print(alien_0)
+newline()
 print(alien_0['color'])
 print(alien_0['points'])
 
@@ -23,4 +27,21 @@ alien_0['color'] = 'yellow'
 #And check that was modified from green to yellow
 print("Alien color has been changed from green to " + alien_0['color'])
 
+#Lets create 3 dicts and then merge them into 1 list
+alien_0 = {'color': 'green'}
+alien_1 = {'color': 'yellow'}
+alien_2 = {'color': 'white'}
+alien = [alien_0, alien_1, alien_2]
+print(alien)
 
+
+#Lets create empty list
+aliens = []
+newline()
+#Lets generate 30 aliens
+for alien in range(30):
+	new_alien = {'color': 'green', 'points': 5, 'speed': 'slow'}
+	aliens.append(new_alien)
+
+#lets count how many aliens are in the list
+print(str(len(aliens)))
