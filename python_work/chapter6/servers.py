@@ -18,10 +18,9 @@ servers = {
 	'location': 'London',
 	},
 }
-
+print("App | Env | Hostname | Component | Location ")
 for app, app_info in servers.items():
 	#print("\nApp: " + app.upper())
 	detailied_info = app_info['environment'] + " | " + app_info['hostname'] + " | " \
 	+ app_info['component'] + " | " + app_info['location']
-	print("App | Env | Hostname | Component | Location ")
 	print(app.upper() + " | " + detailied_info)
