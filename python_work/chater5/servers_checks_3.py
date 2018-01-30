@@ -5,13 +5,13 @@
 
 in_file = open("input.txt").read().splitlines()
 input_list = list(in_file)
-print(input_list)
+#print(input_list)
 #print(input_list)
 env_file = open("envs1.txt").read().splitlines()
 #print(env_file)
 
 
-#splits = env_file.split(',')
+#splits = env_file.split(',')З
 #print(splits)
 #print(len(splits))
 
