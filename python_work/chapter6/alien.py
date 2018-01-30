@@ -43,5 +43,9 @@ for alien in range(30):
 	new_alien = {'color': 'green', 'points': 5, 'speed': 'slow'}
 	aliens.append(new_alien)
 
+#Lets print first 5 aliens
+for alien in aliens[:5]:
+	print(alien)
+
 #lets count how many aliens are in the list
 print(str(len(aliens)))

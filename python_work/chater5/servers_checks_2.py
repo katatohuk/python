@@ -1,8 +1,12 @@
-from operator import itemgetter, attrgetter
+# Chek servers by the list
+# Input list is taken from file "input.txt"
+# Apps/envs/hosts mapping is in the envs1.txt
+#  
 
-f = open("envs.txt").read().splitlines()
+#f = open("envs.txt").read().splitlines()
 in_file = open("input.txt").read().splitlines()
 input_list = list(in_file)
+print(input_list)
 #print(input_list)
 env_file = open("envs1.txt").read().splitlines()
 #print(env_file)
