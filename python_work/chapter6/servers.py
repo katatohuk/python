@@ -20,7 +20,8 @@ servers = {
 }
 
 for app, app_info in servers.items():
-	print("\nApplication: " + app.upper())
-	detailied_info = app_info['environment'] + " : " + app_info['hostname'] + " : has " \
-	+ app_info['component'] + " component which is located in " + app_info['location']
-	print(detailied_info)
+	#print("\nApp: " + app.upper())
+	detailied_info = app_info['environment'] + " | " + app_info['hostname'] + " | " \
+	+ app_info['component'] + " | " + app_info['location']
+	print("App | Env | Hostname | Component | Location ")
+	print(app.upper() + " | " + detailied_info)
