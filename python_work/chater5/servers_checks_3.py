@@ -29,7 +29,7 @@ print("\n")
 #print(sorted(envs.keys())
 #print(envs['server1'])
 
-for key, value in sorted(envs.items()):
+for key, value in sorted(envs.keys()):
 	#print("\n" + key)
 	#print(value)
 	if key in input_list:
