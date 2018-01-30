@@ -1,6 +1,6 @@
 from operator import itemgetter, attrgetter
 
-f = open("envs.txt").read().splitlines()
+#f = open("envs.txt").read().splitlines()
 in_file = open("input.txt").read().splitlines()
 input_list = list(in_file)
 #print(input_list)
