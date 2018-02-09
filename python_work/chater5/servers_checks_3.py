@@ -11,7 +11,7 @@ env_file = open("envs1.txt").read().splitlines()
 #print(env_file)
 
 
-#splits = env_file.split(',')
+#splits = env_file.split(',')З
 #print(splits)
 #print(len(splits))
 
