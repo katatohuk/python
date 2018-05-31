@@ -4,4 +4,4 @@ Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSN
 #the smame but with filter
 Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -eq "Microsoft Windows 10 Enterprise"}
 #Select only server names
-Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -eq "Microsoft Windows Server 2016 Standard"} | select CSName-
+Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -eq "Microsoft Windows Server 2016 Standard"} | select CSName
