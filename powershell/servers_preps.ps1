@@ -32,3 +32,38 @@ Invoke-Command -ComputerName $servers -ScriptBlock {Get-CimInstance -ClassName w
 
 #Uninstall Tivoli agent
 Invoke-Command -ComputerName servername -ScriptBlock {cscript C:\TwsInst\TWS\twsinst.vbs -uninst -uname pdtau}
+
+
+#Install Tivoli agent
+$servers = Get-Content \\dk01sn008\Test\Temp\ADPK\servers_install_agent.txt
+foreach($server in $servers)
+{
+    Write-Output ('Copying bat file to machine ' + $server)
+    cp -path \\dk01sn008\Test\Technical\Batch\TWS\Deployment\Install_Prod_Environment_Agent\create_client_93_PROD_environment.bat -Destination \\$server\C$\temp\
+}
+Invoke-Command -ComputerName $servers -ScriptBlock {C:\Temp\create_client_93_PROD_environment.bat}
+
+
+# for now only workis via psexec
+\\dk01sn008\Test\Temp\KMY\pstool\psexec -accepteula -d  @\\dk01sn008\Test\Temp\ADPK\servers_install_agent.txt  -u scdom\pdtau -p TAUadmin1 -s "C:\temp\create_client_93_PROD_environment.bat"
+
+#Install MQ client
+$servers = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64.txt
+foreach($server in $servers)
+{
+    Write-Output ('Copying Crystal Reports installer to machine ' + $server)
+    cp -path "\\dk01snt899\Software\IBM\WebSphere 7.0.1.2\" -Recurse -Destination  \\$server\C$\temp\mq   
+}
+Invoke-Command -ComputerName $servers -ScriptBlock {msiexec /i "C:\Temp\mq\WebSphere 7.0.1.2\Windows\MSI\IBM WebSphere MQ.msi" /qn RANSFORMS="1033.mst" AGREETOLICENSE="yes"}
+
+
+
+#Install Crystal Reports
+#Copy installer to remote system first
+$servers = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64.txt
+foreach($server in $servers)
+{
+    Write-Output ('Copying installer file to machine ' + $server)
+    cp -path \\Dk01sn017\imsdev\Dev\Release\AddOns\CrystalSetup\CRforVS_clickonce_13_0_16\CRforVS_clickonce_13_0_16\CRRuntime_64bit_13_0_16.msi -Destination \\$server\C$\temp\
+}
+Invoke-Command -ComputerName $servers -ScriptBlock {msiexec /i c:\temp\CRRuntime_64bit_13_0_16.msi /qn}
