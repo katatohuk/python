@@ -48,15 +48,28 @@ Invoke-Command -ComputerName $servers -ScriptBlock {C:\Temp\create_client_93_PRO
 \\dk01sn008\Test\Temp\KMY\pstool\psexec -accepteula -d  @\\dk01sn008\Test\Temp\ADPK\servers_install_agent.txt  -u scdom\pdtau -p TAUadmin1 -s "C:\temp\create_client_93_PROD_environment.bat"
 
 #Install MQ client
+#Copy installer to remote system first
 $servers = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64.txt
 foreach($server in $servers)
 {
     Write-Output ('Copying Crystal Reports installer to machine ' + $server)
     cp -path "\\dk01snt899\Software\IBM\WebSphere 7.0.1.2\" -Recurse -Destination  \\$server\C$\temp\mq   
 }
-Invoke-Command -ComputerName $servers -ScriptBlock {msiexec /i "C:\Temp\mq\WebSphere 7.0.1.2\Windows\MSI\IBM WebSphere MQ.msi" /qn RANSFORMS="1033.mst" AGREETOLICENSE="yes"}
 
+#
+#Install package
+foreach($server in $servers)
+{
+$s = New-PSSession -ComputerName $server
+Write-Host ('Running remotely on: ' + $server)
+$s | ft
+Invoke-Command -Session $s -ScriptBlock {msiexec /i "C:\Temp\mq\WebSphere 7.0.1.2\Windows\MSI\IBM WebSphere MQ.msi" /qn TRANSFORMS="1033.mst" AGREETOLICENSE="yes" /log C:\MSIInstall_MQ.log}
+}
+Get-PSSession | Remove-PSSession
 
+#
+#Double check if package was installed
+Invoke-Command -ComputerName $servers -ScriptBlock {Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName | where {$_.DisplayName -like "*MQ*"}} | Sort-Object -Property PSComputerName
 
 #Install Crystal Reports
 #Copy installer to remote system first
@@ -66,4 +79,32 @@ foreach($server in $servers)
     Write-Output ('Copying installer file to machine ' + $server)
     cp -path \\Dk01sn017\imsdev\Dev\Release\AddOns\CrystalSetup\CRforVS_clickonce_13_0_16\CRforVS_clickonce_13_0_16\CRRuntime_64bit_13_0_16.msi -Destination \\$server\C$\temp\
 }
-Invoke-Command -ComputerName $servers -ScriptBlock {msiexec /i c:\temp\CRRuntime_64bit_13_0_16.msi /qn}
+
+#
+#Install pacakge
+foreach($server in $servers)
+{
+$s = New-PSSession -ComputerName $server
+Write-Host ('Running remotely on: ' + $server)
+#$s | ft
+Invoke-Command -Session $s -ScriptBlock {msiexec /i c:\temp\CRRuntime_64bit_13_0_16.msi /qn /log C:\MSIInstall.log}
+}
+#close all current active PSSessions to free up resources
+Get-PSSession | Remove-PSSession
+
+#
+#check if folder created
+foreach($server in $servers)
+{
+    Write-Output ($server + ': ')
+    Invoke-Command -ComputerName $server -ScriptBlock {Test-Path -path "C:\Program Files (x86)\SAP BusinessObjects"} 
+}
+
+
+#
+#Setting up MQSERVER variable
+Write-Output ("Setting up system variable MQSERVER")
+Invoke-Command -ComputerName $servers -ScriptBlock {
+[Environment]::SetEnvironmentVariable("MQSERVER", "S_dk01tst014/TCP/dk01tst014", "Machine")
+[Environment]::GetEnvironmentVariable("MQSERVER","Machine")
+    }
