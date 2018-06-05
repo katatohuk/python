@@ -1,10 +1,12 @@
 #Enable powershell on all servers using psexec tool before configuring
 \\dk01sn008\Test\Temp\KMY\pstool\psexec -accepteula -d  @\\dk01sn008\Test\Temp\rmnm\ex64.txt  -u scdom\pdtau -p TAUadmin1 -s powershell Enable-PSRemoting -Force
 
-#set all servers list
+#set all servers list into variable
 $servers = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64.txt
 
-# for Win12 servers only set pagefile allocation to Auto
+# Below will check OS version adn depending on that apply differeny pagefile settings:
+# ---- for Win12 servers only set pagefile allocation to Auto
+# ---- for Win16 servers sets pagefile to 65Gb
 
 $servers_12 = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64_12.txt
 #Invoke-Command -ComputerName $servers_12 -ScriptBlock {wmic.exe pagefile list /format:list}
@@ -70,6 +72,18 @@ Get-PSSession | Remove-PSSession
 #
 #Double check if package was installed
 Invoke-Command -ComputerName $servers -ScriptBlock {Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName | where {$_.DisplayName -like "*MQ*"}} | Sort-Object -Property PSComputerName
+#or this one
+foreach($server in $servers)
+{
+   if (Invoke-Command -ComputerName $server -ScriptBlock {Test-Path -path "C:\Program Files (x86)\IBM\WebSphere MQ"})
+    {
+    Write-host -ForegroundColor Green ($server + ' is OK')
+    }   
+   else
+        {
+            Write-Host -ForegroundColor Red ($server + ' IS NOT OK')
+        } 
+}
 
 #Install Crystal Reports
 #Copy installer to remote system first
