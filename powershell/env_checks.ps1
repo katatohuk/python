@@ -32,7 +32,7 @@ function os_ver {
 function disk {[cmdletbinding()]
                param ([string]$drive,[array]$server) 
                Write-Host ('-----------------------------------------------------')
-               Write-Host ('Server: ' + $server)
+               Write-Host ('Server: ' + $server.ToUpper())
                $check = Invoke-Command -ComputerName $server -ArgumentList $drive -ScriptBlock {param ($drive) Get-WmiObject Win32_logicaldisk | select -Property DeviceId, @{Name='GB'; Expression={[math]::round($_.size/1GB, 2)}} | where -Property DeviceId -eq $drive} 
                $check  
                        }
@@ -92,6 +92,34 @@ function pagefile_16 {
                 }
 
 
+#Check .NET Framework version installed
+function net_framework {
+    param ([array]$servers)
+        $dotNet4Builds = @{
+        30319  = '.NET Framework 4.0'
+        378389 = '.NET Framework 4.5'
+        378675 = '.NET Framework 4.5.1'
+        378758 = '.NET Framework 4.5.1'
+        379893 = '.NET Framework 4.5.2' 
+        393295 = '.NET Framework 4.6'
+        393297 = '.NET Framework 4.6'
+        394254 = '.NET Framework 4.6.1'
+        394271 = '.NET Framework 4.6.1'
+        394747 = '.NET Framework 4.6.1'
+        394748 = '.NET Framework 4.6.1)'
+        394802 = '.NET Framework 4.6.2'
+        460798 = '.NET Framework 4.7'
+        460805 = '.NET Framework 4.7'
+        461308 = '.NET Framework 4.7.1'
+        461310 = '.NET Framework 4.7.1'
+        461808 = '.NET Framework 4.7.2'
+        461814 = '.NET Framework 4.7.2'
+        }
+        
+Invoke-Command -cn $server -ScriptBlock {Get-ItemPropertyValue 'HKLM:SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\' -Name Release}
+}
+
+
 
 # Run loop for all servers in array
 foreach($server in $servers)
@@ -104,28 +132,21 @@ foreach($server in $servers)
                 {
                     pagefile_16 $os_ver.CSName
                 }
-}
-
-
-#Check D: drive
-foreach($server in $servers)
-{$check_d = disk D: $server
-     if($check_d.GB -gt 15)
+$check_d = disk D: $server
+     if($check_d.GB -gt 14)
         {
             Write-Host -NoNewline ('Drive ' + $check_d.DeviceID + ' is ')
             Write-host -ForegroundColor Green ('OK')
         }
             else {Write-Host -NoNewline ('Drive ' + $check_d.DeviceID + ' is')
                   Write-host -ForegroundColor Red ( ' NOT ok')}
-}
-
-
-#Check regional setting are set to Denmark
-foreach($server in $servers)
-{$locale = invoke-Command -cn $server -ScriptBlock {write-host $env:COMPUTERNAME; get-culture } | select -ExpandProperty name
+$locale = invoke-Command -cn $server -ScriptBlock {write-host $env:COMPUTERNAME; get-culture } | select -ExpandProperty name
     if($locale -eq 'da-DK')
        {
         Write-Host -ForegroundColor Green ('Regional settings are OK')
        } 
             else{Write-host -ForegroundColor Red ( 'NOT ok')}
+$checkfx = net_framework $server
+     $dotNet4Builds[$checkfx]             
 }
+
