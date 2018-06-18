@@ -31,8 +31,8 @@ function os_ver {
 #Check disk size by drive letter
 function disk {[cmdletbinding()]
                param ([string]$drive,[array]$server) 
-               Write-Host ('-----------------------------------------------------')
-               Write-Host ('Server: ' + $server.ToUpper())
+               #Write-Host ('-----------------------------------------------------')
+               #Write-Host ('Server: ' + $server.ToUpper())
                $check = Invoke-Command -ComputerName $server -ArgumentList $drive -ScriptBlock {param ($drive) Get-WmiObject Win32_logicaldisk | select -Property DeviceId, @{Name='GB'; Expression={[math]::round($_.size/1GB, 2)}} | where -Property DeviceId -eq $drive} 
                $check  
                        }
@@ -44,8 +44,8 @@ function disk {[cmdletbinding()]
 function pagefile_12 {
                     param ([array]$servers)
                     #Checking AutomaticManagedPagefile status
-                    Write-Host ('-----------------------------------------------------')        
-                    Write-Host ('Server: ' + $servers)
+                    #Write-Host ('-----------------------------------------------------')        
+                    #Write-Host ('Server: ' + $servers)
                     Write-Host -NoNewline ('OS version: ') 
                     Get-CimInstance Win32_OperatingSystem -ComputerName $servers| Select-Object -ExpandProperty Caption
                     $win12_check = Invoke-Command -ComputerName $servers -ScriptBlock {Get-WmiObject -Class Win32_ComputerSystem | fl AutomaticManagedPagefile} | Out-String
@@ -54,10 +54,12 @@ function pagefile_12 {
                     Write-Host ('')
                         if ($win12_check -match 'AutomaticManagedPagefile : True')
                     {
+                        Write-Host -NoNewline ('Pagefile settings: ')
                         Write-Host -ForegroundColor Green ('OK')
                     }
                             else
                                 {
+                                    Write-Host -NoNewline ('Pagefile settings: ')
                                     Write-Host -ForegroundColor Red ('Oops, please check pagefile settings manually')
             
                                 }
@@ -69,8 +71,8 @@ function pagefile_12 {
 function pagefile_16 {
                     param ([array]$servers)
                     #Checking AutomaticManagedPagefile status
-                    Write-Host ('-----------------------------------------------------')
-                    Write-Host ('Server: ' + $servers)
+                    #Write-Host ('-----------------------------------------------------')
+                    #Write-Host ('Server: ' + $servers)
                     Write-Host -NoNewline ('OS version: ') 
                     Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object -ExpandProperty Caption
                     $win16_check_1 = Invoke-Command -ComputerName $servers -ScriptBlock {Get-WmiObject -Class Win32_ComputerSystem | fl AutomaticManagedPagefile} | Out-String
@@ -83,10 +85,12 @@ function pagefile_16 {
                     Write-Host ('')
                       if ($win16_check_1 -match 'AutomaticManagedPagefile : False' -and $win16_check_2 -match 'C:\\pagefile.sys 65536 65536')
                     {
+                        Write-Host -NoNewline ('Pagefile settings: ')
                         Write-Host -ForegroundColor Green ('OK')
                     }
                             else
                                 {
+                                    Write-Host -NoNewline ('Pagefile settings: ')
                                     Write-Host -ForegroundColor Red ('Oops, please check pagefile settings manually')
                                 }
                 }
@@ -123,7 +127,11 @@ Invoke-Command -cn $server -ScriptBlock {Get-ItemPropertyValue 'HKLM:SOFTWARE\Mi
 
 # Run loop for all servers in array
 foreach($server in $servers)
-{$os_ver = os_ver $server
+{
+Write-Host ('')
+Write-Host ('Checking Pagefile status')
+Write-Host ('-----------------------------------------------------')
+$os_ver = os_ver $server
      if($os_ver.Caption -match 'Microsoft Windows Server 2012 R2 Standard')
         {
             pagefile_12 $os_ver.CSName
@@ -132,6 +140,9 @@ foreach($server in $servers)
                 {
                     pagefile_16 $os_ver.CSName
                 }
+Write-Host ('')
+Write-Host ('Checking drive D:\ status')
+Write-Host ('-----------------------------------------------------')
 $check_d = disk D: $server
      if($check_d.GB -gt 14)
         {
@@ -140,12 +151,21 @@ $check_d = disk D: $server
         }
             else {Write-Host -NoNewline ('Drive ' + $check_d.DeviceID + ' is')
                   Write-host -ForegroundColor Red ( ' NOT ok')}
-$locale = invoke-Command -cn $server -ScriptBlock {write-host $env:COMPUTERNAME; get-culture } | select -ExpandProperty name
+Write-Host ('')
+Write-Host ('Checking locale')
+Write-Host ('-----------------------------------------------------')
+$locale = invoke-Command -cn $server -ScriptBlock {get-culture } | select -ExpandProperty name
     if($locale -eq 'da-DK')
        {
-        Write-Host -ForegroundColor Green ('Regional settings are OK')
+        Write-Host -NoNewline ('Regional settings:')
+        Write-Host -ForegroundColor Green (' OK')
        } 
-            else{Write-host -ForegroundColor Red ( 'NOT ok')}
+            else{
+            Write-Host -NoNewline ('Regional settings:')
+            Write-host -ForegroundColor Red ( 'NOT ok')}
+Write-Host ('')
+Write-Host ('Checking .NET Framework version installed')
+Write-Host ('-----------------------------------------------------')
 $checkfx = net_framework $server
      $dotNet4Builds[$checkfx]             
 }
