@@ -133,12 +133,12 @@ function is-installed ($program) {
                                                                                        $x64 }
 }
 
-#is-installed sap
 
 # Run loop for all servers in array
 foreach($server in $servers)
 {
-Write-Host ('')
+Write-Host ('-----------------------------------------------------')
+Write-Host -BackgroundColor Black -ForegroundColor DarkCyan ('## ' + $server.ToUpper())
 Write-Host ('-----------------------------------------------------')
 Write-Host -ForegroundColor darkYellow ('Checking Pagefile status')
 $os_ver = os_ver $server
@@ -182,14 +182,14 @@ Write-Host ('')
 Write-Host ('-----------------------------------------------------')
 Write-Host -ForegroundColor darkYellow ('Checking IBM Websphere MQ is installed')
 $checkmq = is-installed IBM Websphere MQ
-if($checkmq -eq $true)
+if($checkmq)
     {Write-Host -ForegroundColor Green ('OK')}
         else{Write-host -ForegroundColor Red ( 'NOT ok')}
 Write-Host ('')
 Write-Host ('-----------------------------------------------------')
 Write-Host -ForegroundColor darkYellow ('Checking Crystal Reports is installed')
-$checksap = is-installed wot
-if($checksap -eq $true)
+$checksap = is-installed SAP
+if($checksap)
     {Write-Host -ForegroundColor Green ('OK')}
         else{Write-host -ForegroundColor Red ( 'NOT ok')}       
 }
