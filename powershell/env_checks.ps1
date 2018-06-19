@@ -123,15 +123,17 @@ Invoke-Command -cn $server -ScriptBlock {Get-ItemPropertyValue 'HKLM:SOFTWARE\Mi
 
 # Check software is installed
 function is-installed ($program) {
-                                    Invoke-Command -ComputerName $server -ScriptBlock {$x86 = ((Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall") |
-                                        Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" }).Length -gt 0;
-                                    
-                                         $x64 = ((Get-ChildItem "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") |
-                                         Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" }).Length -gt 0;
-
-                                            $x86 -or $x64; }
+                                    Invoke-Command -ComputerName $server -ArgumentList $program -ScriptBlock {param($program)
+                                                                                       $x86 = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*  | 
+                                                                                       Select-Object DisplayName | where {$_.DisplayName -like "*$program*"};
+                                                                                       $x64 = Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*  | 
+                                                                                       Select-Object DisplayName | where {$_.DisplayName -like "*$program*"};
+                                                                                       #$x86 -or $x64;}
+                                                                                       $x86
+                                                                                       $x64 }
 }
 
+#is-installed sap
 
 # Run loop for all servers in array
 foreach($server in $servers)
@@ -178,8 +180,17 @@ $checkfx = net_framework $server
      $dotNet4Builds[$checkfx]   
 Write-Host ('')
 Write-Host ('-----------------------------------------------------')
-Write-Host -ForegroundColor darkYellow ('Checking IBM Websphere MQ is  installed')
+Write-Host -ForegroundColor darkYellow ('Checking IBM Websphere MQ is installed')
 $checkmq = is-installed IBM Websphere MQ
-$checkmq         
+if($checkmq -eq $true)
+    {Write-Host -ForegroundColor Green ('OK')}
+        else{Write-host -ForegroundColor Red ( 'NOT ok')}
+Write-Host ('')
+Write-Host ('-----------------------------------------------------')
+Write-Host -ForegroundColor darkYellow ('Checking Crystal Reports is installed')
+$checksap = is-installed wot
+if($checksap -eq $true)
+    {Write-Host -ForegroundColor Green ('OK')}
+        else{Write-host -ForegroundColor Red ( 'NOT ok')}       
 }
 
