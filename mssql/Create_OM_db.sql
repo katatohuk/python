@@ -6,30 +6,13 @@ DECLARE @path VARCHAR(256) -- path for data files
 DECLARE @fileName VARCHAR(256) -- filename 
 DECLARE @cmd varchar(256)
 declare @cmd1 varchar(max)
-DECLARE @prevver VARCHAR(50) -- previous version no
-DECLARE @curver VARCHAR(50) -- current version no
+DECLARE @sourcedb VARCHAR(50) -- previous version no
+DECLARE @targetdb VARCHAR(50) -- current version no
 DECLARE @create varchar(max) -- create all databases
 
 set @path = 'D:\MSSQL_DATA\'
--- Choose previous version
-set @prevver = '_631_'
--- Set desired version
-set @curver = '_65_'
+set @name = 'FNS_64_GSDEV64_201807'
 
-
-DECLARE db_cursor CURSOR FOR 
-select replace(name,@prevver,@curver)
-from sys.databases
---change below to previous verios as well
-where name like 'FNS_631%' order by name
-
-
-OPEN db_cursor  
-FETCH NEXT FROM db_cursor INTO @name 
-
-WHILE @@FETCH_STATUS = 0  
-BEGIN  
-       
 	  set @cmd = 'mkdir ' + @path + @name + '\'
 	  set @cmd = 'EXEC xp_cmdshell ' + '''' + @cmd + ''''
 	  print '#################################'
@@ -114,7 +97,5 @@ GO'
 print @create
 --exec @create
       FETCH NEXT FROM db_cursor INTO @name 
-END
 
-CLOSE db_cursor  
-DEALLOCATE db_cursor 
+

@@ -13,9 +13,9 @@
 
 $servers = Get-Content \\dk01sn008\Test\Temp\ADPK\dk01sv8088.txt
 
-Write-host -Backgroundcolor 'Black' ('###########################')
-Write-host -Backgroundcolor 'Black' (' Performing sanity checks')
-Write-host -Backgroundcolor 'Black' ('###########################')
+Write-host -Backgroundcolor 'Black' ('################################################################')
+Write-host -Backgroundcolor 'Black' ('                 Performing sanity checks                       ')
+Write-host -Backgroundcolor 'Black' ('################################################################')
 
 
 #
@@ -33,7 +33,7 @@ function disk {[cmdletbinding()]
                param ([string]$drive) 
                #Write-Host ('-----------------------------------------------------')
                #Write-Host ('Server: ' + $server.ToUpper())
-               $check = Invoke-Command -ComputerName $server -ArgumentList $drive -ScriptBlock {param ($drive) Get-WmiObject Win32_logicaldisk | select -Property DeviceId, @{Name='GB'; Expression={[math]::round($_.size/1GB, 2)}} | where -Property DeviceId -eq $drive} 
+               $check = Invoke-Command -ComputerName $server -ArgumentList $drive -ScriptBlock {param ($drive) Get-WmiObject Win32_logicaldisk | select -Property DeviceId, @{Name='GB'; Expression={[math]::round($_.size/1GB, 2)}} | where -Property DeviceId -eq $drive } 
                $check  
                        }
 
@@ -133,13 +133,62 @@ function is-installed ($program) {
                                                                                        $x64 }
 }
 
+# Check if tivoli agent is linked and running
+function check-tivoli {param([string]$server)
+
+Add-Type -Path "C:\Oracle12c\Oracle12cClient\ODP.NET\managed\common\Oracle.ManagedDataAccess.dll"
+$connection = New-Object System.Data.OracleClient.OracleConnection("User Id=IWSPROD;Password=IWSPROD;Data Source=DK01SU0803/U0303201")
+$cmd1 = $connection.CreateCommand()
+$cmd2 = $connection.CreateCommand()
+$query1 = "SELECT PWKS_NAME FROM PWKS_WORKSTATIONS where PWKS_JOBMAN_UP='N' and PWKS_NAME like '%$server%'"
+$query2 = "SELECT PWKS_NAME FROM PWKS_WORKSTATIONS where PWKS_LINK_STATUS='N' and PWKS_NAME like '%$server%'"
+
+$cmd1.CommandText = $query1 
+$cmd2.CommandText = $query2
+$connection.Open()
+
+$rdr1 = $cmd1.ExecuteReader()
+if ($rdr1.Read()) {
+    
+    $out1 = $rdr1.GetString(0)
+    Write-host -NoNewline ('Agent is running: ')
+    Write-host -ForegroundColor Red -NoNewline ('NO ')
+    Write-Host $out1
+        
+}
+    else{
+         Write-host -NoNewline ('Agent is running: ')
+         Write-Host -ForegroundColor Green -NoNewline  ('YES ')
+         Write-Host $out1
+    }
+
+$rdr2 = $cmd2.ExecuteReader()
+if ($rdr2.Read()) {
+    
+    $out2 = $rdr2.GetString(0)
+    Write-host -NoNewline ('Agent is linked: ')
+    Write-host -ForegroundColor Red -NoNewline  ('NO ')
+    Write-Host $out2
+      
+}
+    else {
+          Write-host -NoNewline ('Agent is linked: ')
+          Write-Host -ForegroundColor Green -NoNewline  ('YES')
+          Write-Host $out2
+          }
+
+$connection.Close()
+
+}
+
+
 
 # Run loop for all servers in array
 foreach($server in $servers)
 {
-Write-Host ('-----------------------------------------------------')
+Write-Host ('----------------------------------------------------------------')  
 Write-Host -BackgroundColor Black -ForegroundColor DarkCyan ('## ' + $server.ToUpper())
-Write-Host ('-----------------------------------------------------')
+Write-Host ('----------------------------------------------------------------')
 Write-Host -ForegroundColor darkYellow ('Checking Pagefile status')
 $os_ver = os_ver $server
      if($os_ver.Caption -match 'Microsoft Windows Server 2012 R2 Standard')
@@ -151,7 +200,7 @@ $os_ver = os_ver $server
                     pagefile_16 $os_ver.CSName
                 }
 Write-Host ('')
-Write-Host ('-----------------------------------------------------')
+Write-Host ('----------------------------------------------------------------')  
 Write-Host -ForegroundColor darkYellow ('# Checking drive D:\ status')
 $check_d = disk D:
      if($check_d.GB -gt 14)
@@ -160,9 +209,12 @@ $check_d = disk D:
             Write-host -ForegroundColor Green ('OK')
         }
             else {Write-Host -NoNewline ('Drive ' + $check_d.DeviceID + ' is')
-                  Write-host -ForegroundColor Red ( ' NOT ok')}
+                  Write-host -ForegroundColor Red ( ' NOT ok')
+                  Write-Host ('Disk is misssing or size doesnt match')
+                  Write-host ('Size: ')$check_d.GB
+                                    }
 Write-Host ('')
-Write-Host ('-----------------------------------------------------')
+Write-Host ('----------------------------------------------------------------')    
 Write-Host -ForegroundColor darkYellow ('Checking locale')
 $locale = invoke-Command -cn $server -ScriptBlock {get-culture } | select -ExpandProperty name
     if($locale -eq 'da-DK')
@@ -174,23 +226,27 @@ $locale = invoke-Command -cn $server -ScriptBlock {get-culture } | select -Expan
             Write-Host -NoNewline ('Regional settings:')
             Write-host -ForegroundColor Red ( 'NOT ok')}
 Write-Host ('')
-Write-Host ('-----------------------------------------------------')
+Write-Host ('----------------------------------------------------------------')          
 Write-Host -ForegroundColor darkYellow ('Checking .NET Framework version installed')
 $checkfx = net_framework $server
      $dotNet4Builds[$checkfx]   
 Write-Host ('')
-Write-Host ('-----------------------------------------------------')
+Write-Host ('----------------------------------------------------------------')  
 Write-Host -ForegroundColor darkYellow ('Checking IBM Websphere MQ is installed')
 $checkmq = is-installed IBM Websphere MQ
 if($checkmq)
     {Write-Host -ForegroundColor Green ('OK')}
         else{Write-host -ForegroundColor Red ( 'NOT ok')}
 Write-Host ('')
-Write-Host ('-----------------------------------------------------')
+Write-Host ('----------------------------------------------------------------')  
 Write-Host -ForegroundColor darkYellow ('Checking Crystal Reports is installed')
 $checksap = is-installed SAP
 if($checksap)
     {Write-Host -ForegroundColor Green ('OK')}
-        else{Write-host -ForegroundColor Red ( 'NOT ok')}       
+        else{Write-host -ForegroundColor Red ( 'NOT ok')} 
+Write-Host ('')
+Write-Host ('----------------------------------------------------------------')  
+Write-Host -ForegroundColor darkYellow ('Checking Tivoli agent is linked and running')
+check-tivoli $server
+       
 }
-

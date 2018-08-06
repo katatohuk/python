@@ -4,25 +4,25 @@ Write-Host ('Enable powershell on all servers using psexec tool before configuri
 #set all servers list into variable
 $servers = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64.txt
 
-Write-Host ('Below will check OS version adn depending on that apply different pagefile settings:
-### for Win12 servers sets pagefile allocation to Auto
-### for Win16 servers sets pagefile allocation to 65Gb')
+Write-Host ("`nBelow will check OS version adn depending on that apply different pagefile settings:
+`n---> for Win12 servers sets pagefile allocation to Auto
+`n---> for Win16 servers sets pagefile allocation to 65Gb ")
 
 
-$os_ver = $var = Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -in "Microsoft Windows Server 2012 R2 Standard", "Microsoft Windows Server 2016 Standard"}
+$os_ver = Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -in "Microsoft Windows Server 2012 R2 Standard", "Microsoft Windows Server 2016 Standard"}
 foreach($server in $os_ver)
 {
-    if ($server -match 'Microsoft Windows Server 2012 R2 Standard')
+    if ($server.Caption -match 'Microsoft Windows Server 2012 R2 Standard')
         {
             # Changing pagefile setting to auto 
-            Invoke-Command -ComputerName $server -ScriptBlock {wmic computersystem set AutomaticManagedPagefile=true}
+            Invoke-Command -ComputerName $server.CSName -ScriptBlock {wmic computersystem set AutomaticManagedPagefile=true}
         }
-             elseif ($server -match 'Microsoft Windows Server 2016 Standard')
+             elseif ($server.Caption -match 'Microsoft Windows Server 2016 Standard')
                 {
-                    #Ensure you turned off auto pagefile sizing by sytem, otherwise below 2 commands won't work at all throwing exceptions
-                    Invoke-Command -ComputerName $server -ScriptBlock {wmic computersystem set AutomaticManagedPagefile=false}
+                    #Ensure you turned off auto pagefile sizing by system, otherwise below 2 commands won't work at all throwing exceptions
+                    Invoke-Command -ComputerName $server.CSName -ScriptBlock {wmic computersystem set AutomaticManagedPagefile=false}
                     #Setting pagefile allocation to 65Gb
-                    Invoke-Command -ComputerName $server -ScriptBlock {wmic.exe pagefileset where name="'C:\\pagefile.sys'" set 'InitialSize=65536,MaximumSize=65536'}
+                    Invoke-Command -ComputerName $server.CSName -ScriptBlock {wmic.exe pagefileset where name="'C:\\pagefile.sys'" set 'InitialSize=65536,MaximumSize=65536'}
                 }
                     }
 
@@ -55,17 +55,6 @@ foreach($server in $servers)
 Read-Host -Prompt 'Press any key if you see that all servers are OK, if not, please press CTRL+Z combination to terminate script and investigate server accessibility issues'
 
 
-
-#For Win16 servers pagfile size has to be setup manually
-$servers_16 = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64_16.txt
-#Ensure you turned off auto pagefile sizing by sytem, otherwise below 2 commands won't work at all throwing exceptions
-Invoke-Command -ComputerName $servers_16 -ScriptBlock {wmic computersystem set AutomaticManagedPagefile=false}
-#check the status of pagefile settings
-Invoke-Command -ComputerName $servers_16 -ScriptBlock {Get-WmiObject -Class Win32_ComputerSystem | fl AutomaticManagedPagefile}
-#Check size parameters
-Invoke-Command -ComputerName $servers_16 -ScriptBlock {wmic.exe pagefileset where name="'C:\\pagefile.sys'" list /format:list}
-#Set pagefile size to 65Gb
-Invoke-Command -ComputerName $servers_16 -ScriptBlock {wmic.exe pagefileset where name="'C:\\pagefile.sys'" set 'InitialSize=65536,MaximumSize=65536'}
 
 
 
@@ -163,5 +152,8 @@ Invoke-Command -ComputerName $servers -ScriptBlock {
 
 
 
-## Sanity checks
-Write-Output ('Performing sanity checks')    
+
+
+
+
+

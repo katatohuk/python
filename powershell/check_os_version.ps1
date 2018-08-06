@@ -1,23 +1,68 @@
-# put a file with server list somewhere as in below example
-$servers = Get-Content \\dk01sn008\Test\Temp\RMNM\ex64.txt
-Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName
-#the smame but with filter
-Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -eq "Microsoft Windows 10 Enterprise"}
-#Select only server names
-Get-CimInstance Win32_OperatingSystem -ComputerName $servers | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -eq "Microsoft Windows Server 2016 Standard"} | select CSName
+<#
+.NAME
+ Check OS version.
+
+.SYNOPSIS
+ Overwrite Zabbix <zabbix_agentd.win.conf> and restart service to apply changes.
+ Run it under account which is local admin on a remote server
+
+.USAGE
+ check_os_version.ps    for a local server 
+ check_os_version.ps -s <SERVERNAME> ## for a single server
+ check_os_version.ps -sl <PATH_TO_TEXT_FILE> ## for a list of servers in a txt file
+#>
+
+# Script params
+param([Parameter(Mandatory=$false)][array]$sl,[string]$s)
+
+# User defined variables.
 
 
-
-$var = Get-CimInstance Win32_OperatingSystem -ComputerName DK01SV9142,DK01SV9146 | Select-Object CSName, Caption | Sort-Object -Property CSName | where {$_.Caption -in "Microsoft Windows Server 2012 R2 Standard", "Microsoft Windows Server 2016 Standard"}
-#$var
-foreach($v in $var)
-{
-    if ($v -match 'Microsoft Windows Server 2012 R2 Standard')
+# Logic for -sl option
+if(!$sl -eq '')
+    {
+     # Reading content of the txt file
+     $cred = get-credential -UserName scdom\pdbaa -Message "Please enter password for account PDBAA just once"
+     $sl = get-content $sl
+     foreach($server in $sl)
         {
-         write-host ('Win ver is 2012')
+            # Lets test if servers is online
+            if (Test-Connection $server -Quiet -Count 2)
+            
+            {
+             $session = New-CimSession -cn $server -Credential $cred
+             Get-CimInstance Win32_OperatingSystem -CimSession $session | Select-Object CSName, Caption 
+            }
+                else
+                    {
+                        write-host -ForegroundColor Red ($server + ' is unreachable')
+                     }
         }
-             elseif ($v -match 'Microsoft Windows Server 2016 Standard')
-                {
-                     write-host ("Win ver is 2016")
-                }
-}
+     }
+
+# Logic for -s option
+elseif(!$s -eq '')
+    {
+        $cred = get-credential -UserName scdom\pdbaa -Message "Please enter password for account PDBAA just once"
+        # Lets test if servers is online
+            if (Test-Connection $s -Quiet -Count 2)
+            
+            {
+            $session = New-CimSession -cn $s -Credential $cred
+            Get-CimInstance Win32_OperatingSystem -CimSession $session | Select-Object CSName, Caption
+            }
+
+                else
+                    {
+                        write-host -ForegroundColor Red ($s + ' is unreachable')
+                     }
+     }
+
+# not input logic, will apply to localmachine
+else {
+        Get-CimInstance Win32_OperatingSystem | Select-Object CSName, Caption
+    }
+
+
+# Lets kill all opened ps sessions just in case
+Get-PSSession | Remove-PSSession    
