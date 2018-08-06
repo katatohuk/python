@@ -38,20 +38,20 @@ if(!$sl -eq '')
 
                  If (Invoke-Command -Session $session -ScriptBlock {get-service -Name "Zabbix Agent" -ErrorAction SilentlyContinue | Where-Object -Property Status -eq "Running"})
                     {   Write-Host '.'
-                        Write-Host 'Service is installed and running. Terminating the script'
+                        Write-Host 'Service is installed and running.'
                         Write-Host -ForegroundColor Green 'OK'
-                        break }
+                        continue }
                     # If serice is installed but not running - try to run it and exit the damn script   
                     Elseif (Invoke-Command -Session $session -ScriptBlock {get-service -Name "Zabbix Agent" -ErrorAction SilentlyContinue | Where-Object -Property Status -eq "Stopped"}) 
                                 {
                                 Write-Host ('.')  
-                                Write-Host 'Service detected but not started. Starting and terminating the script'
+                                Write-Host 'Service detected but not started. Starting.'
                                 Invoke-Command -Session $session -ScriptBlock {
                                                                                 Start-Service "Zabbix Agent" -ErrorAction SilentlyContinue
                                                                                 if(get-service -Name "Zabbix Agent" -ErrorAction SilentlyContinue | Where-Object -Property Status -eq "Running")
                                                                                 {Write-Host -ForegroundColor Green 'OK'}
                                                                                }
-                                break
+                                continue
                                 }
                                     
                          Else {       
