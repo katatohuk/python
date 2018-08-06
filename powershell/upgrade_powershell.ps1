@@ -35,7 +35,7 @@ if(!$sl -eq '')
             if (Test-Connection $server -Quiet -Count 2)
             
             {
-             cp -Recurse -Path $Source -Destination \\$server\c$\temp
+             Copy-Item -Recurse -Path $Source -Destination \\$server\c$\temp
              $session = New-PSSession -cn $server
              Invoke-Command -Session $session -ScriptBlock {DISM.exe /Online /Add-Package /PackagePath:C:\temp\Windows6.1-KB2809215-x64.cab /quiet /norestart
                                                             DISM.exe /Online /Add-Package /PackagePath:C:\temp\Windows6.1-KB2872035-x64.cab /quiet /norestart
@@ -59,7 +59,7 @@ elseif(!$s -eq '')
             if (Test-Connection $s -Quiet -Count 2)
             
             {
-            cp -Recurse -Path $Source -Destination \\$s\c$\temp
+            Copy-Item -Recurse -Path $Source -Destination \\$s\c$\temp
             $session = New-PSSession -cn $s
             Invoke-Command -Session $session -ScriptBlock {DISM.exe /Online /Add-Package /PackagePath:C:\temp\Windows6.1-KB2809215-x64.cab /quiet /norestart
                                                            DISM.exe /Online /Add-Package /PackagePath:C:\temp\Windows6.1-KB2872035-x64.cab /quiet /norestart
