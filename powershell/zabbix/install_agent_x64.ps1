@@ -38,7 +38,7 @@ if(!$sl -eq '')
 
                  If (Invoke-Command -Session $session -ScriptBlock {get-service -Name "Zabbix Agent" -ErrorAction SilentlyContinue | Where-Object -Property Status -eq "Running"})
                     {   Write-Host '.'
-                        Write-Host 'Service is installed and running.'
+                        Write-Host 'Service is installed and running. Nothing to do.'
                         Write-Host -ForegroundColor Green 'OK'
                         continue }
                     # If serice is installed but not running - try to run it and exit the damn script   
